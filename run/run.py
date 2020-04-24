@@ -33,7 +33,7 @@ def check_appstore():
         time.sleep(2)
         os.system('git add *')
         # git_commit = "git commit - m 'update latest version to %s'"%lastest_app_version
-        os.system("git commit -m 'test git recommand'")
+        os.system("git commit -m 'update latest version to %s'"%lastest_app_version)
         res = os.system('git push origin')
 
         if res != 0:
