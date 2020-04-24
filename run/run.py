@@ -46,20 +46,22 @@ def check_appstore_version() -> appstore_result_json_model:
     json_model = appstore_result_json_model(dict['results'][0])  # parse json model
     lastest_app_version = json_model.version
     run_info.app_release_note = run_info.app_release_note + '\n\n' + json_model.releaseNotes
+    run_info.app_name = json_model.trackName
     print('===============================')
     print('appstore version is %s\nlocal lastest version is %s' % (lastest_app_version, run_info.latest_app_version))
     return json_model
 
 # SMTP email
 def send_email_to_everybody():
+
     server = smtplib.SMTP(host=run_info.smtp_host, port=run_info.smtp_port)
     server.login(user=run_info.smtp_user, password=run_info.smtp_password)
     server.set_debuglevel(1)
 
     msg = MIMEText(run_info.app_release_note, 'plain', 'utf-8')
-    msg['From'] = '"发送者"<%s>'%run_info.smtp_user
+    msg['From'] = '"%s"<%s>'%(run_info.smtp_user_nickname,run_info.smtp_user)
     msg['To'] = str(run_info.smtp_to_user_list)
-    msg['Subject'] = Header('%s iOS 上线通知' % lastest_app_version, 'utf-8')
+    msg['Subject'] = Header('%s %s iOS 上线通知' %(run_info.app_name,lastest_app_version), 'utf-8')
     try:
         server.sendmail(from_addr=run_info.smtp_user, to_addrs=run_info.smtp_to_user_list, msg=msg.as_string())
         print('\033[0;32m smtp send success ‍\033[0m')
@@ -97,7 +99,7 @@ def update_run_information(df):
     run_info.latest_app_version = df.iloc[6][1]
     run_info.app_id = df.iloc[7][1]
     run_info.appstore_info_url = df.iloc[8][1]
-
+    run_info.smtp_user_nickname = df.iloc[9][1]
 
 def run():
     read_excel()

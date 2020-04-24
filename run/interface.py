@@ -21,7 +21,9 @@ class run_json_model():
     app_release_note = ''
     latest_app_version = ''
     app_id = ''
+    app_name = ''
     appstore_info_url = ''
+    smtp_user_nickname = ''
 
 class appstore_result_json_model(base_json_model):
 
