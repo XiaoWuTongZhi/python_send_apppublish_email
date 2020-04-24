@@ -26,10 +26,24 @@ def check_appstore():
     print('appstore version is %s\nlocal lastest version is %s' % (lastest_app_version, run_info.latest_app_version))
 
     if compare(lastest_app_version, run_info.latest_app_version) == CompareResult.Greater:
+
         print('\033[1;32m 😁 needs to send email to everybody !\033[0m')
-        res = send_email_to_everybody()
-        if res == True:
-            write_excel(6, 1, lastest_app_version)
+
+        write_excel(6, 1, lastest_app_version)
+
+        os.system('git add *')
+        git_commit = "git commit - m 'update latest version to %s'"%lastest_app_version
+        os.system(git_commit)
+        res = os.system('git push origin')
+
+        if res != 0:
+            print('\033[0;31m git push origin failed ! \033[0m')
+            os._exit(-1)
+        else:
+            os.system('git tag %s'%lastest_app_version)
+            os.system('git push origin --tags')
+            send_email_to_everybody()
+
     else:
         print("\033[1;33m 😿 it doesn't need to send update-email. \033[0m")
 
