@@ -11,19 +11,7 @@ lastest_app_version = ''
 
 run_info = run_json_model()
 
-
-def check_appstore():
-    res = requests.get(url=run_info.appstore_info_url, params={'id': run_info.app_id})
-    dict = json.loads(res.content)
-    print('AppStore response json data is', dict)
-    json_model = appstore_result_json_model(dict['results'][0])  # parse json model
-
-    lastest_app_version = json_model.version
-
-    run_info.app_release_note = run_info.app_release_note + '\n\n' + json_model.releaseNotes
-
-    print('===============================')
-    print('appstore version is %s\nlocal lastest version is %s' % (lastest_app_version, run_info.latest_app_version))
+def auto_send_email(json_model:appstore_result_json_model):
 
     if compare(lastest_app_version, run_info.latest_app_version) == CompareResult.Greater:
 
@@ -33,20 +21,34 @@ def check_appstore():
         time.sleep(2)
         os.system('git add *')
         # git_commit = "git commit - m 'update latest version to %s'"%lastest_app_version
-        os.system("git commit -m 'update latest version to %s'"%lastest_app_version)
+        os.system("git commit -m 'update latest version to %s'" % lastest_app_version)
         res = os.system('git push origin')
 
         if res != 0:
             print('\033[0;31m git push origin failed ! \033[0m')
             os._exit(-1)
         else:
-            os.system('git tag %s'%lastest_app_version)
+            os.system('git tag %s' % lastest_app_version)
             os.system('git push origin --tags')
             send_email_to_everybody()
 
     else:
         print("\033[1;33m 😿 it doesn't need to send update-email. \033[0m")
 
+
+
+def check_appstore_version() -> appstore_result_json_model:
+    global lastest_app_version
+
+    res = requests.get(url=run_info.appstore_info_url, params={'id': run_info.app_id})
+    dict = json.loads(res.content)
+    print('AppStore response json data is', dict)
+    json_model = appstore_result_json_model(dict['results'][0])  # parse json model
+    lastest_app_version = json_model.version
+    run_info.app_release_note = run_info.app_release_note + '\n\n' + json_model.releaseNotes
+    print('===============================')
+    print('appstore version is %s\nlocal lastest version is %s' % (lastest_app_version, run_info.latest_app_version))
+    return json_model
 
 # SMTP email
 def send_email_to_everybody():
@@ -99,7 +101,8 @@ def update_run_information(df):
 
 def run():
     read_excel()
-    check_appstore()
+    json_model = check_appstore_version()
+    auto_send_email(json_model)
 
 
 if __name__ == '__main__':
