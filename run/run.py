@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # coding=utf-8
-import smtplib, requests, json, os
+import smtplib, requests, json, os, time
 import pandas as pd
 from interface import appstore_result_json_model, run_json_model, compare, CompareResult
 
@@ -30,10 +30,10 @@ def check_appstore():
         print('\033[1;32m 😁 needs to send email to everybody !\033[0m')
 
         write_excel(6, 1, lastest_app_version)
-
+        time.sleep(2)
         os.system('git add *')
-        git_commit = "git commit - m 'update latest version to %s'"%lastest_app_version
-        os.system(git_commit)
+        # git_commit = "git commit - m 'update latest version to %s'"%lastest_app_version
+        os.system("git commit -m 'test git recommand'")
         res = os.system('git push origin')
 
         if res != 0:
@@ -81,6 +81,7 @@ def write_excel(row, colum, value):
     df.iloc[row][colum] = value
     df.to_excel(filename, index=False, header=True)
     print('write excel complete')
+
 
 
 # Private
