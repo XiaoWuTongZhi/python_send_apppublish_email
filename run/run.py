@@ -41,7 +41,7 @@ def send_email_to_everybody():
     server.set_debuglevel(1)
 
     msg = MIMEText(run_info.app_release_note, 'plain', 'utf-8')
-    msg['From'] = run_info.smtp_user
+    msg['From'] = '"发送者"<%s>'%run_info.smtp_user
     msg['To'] = str(run_info.smtp_to_user_list)
     msg['Subject'] = Header('%s iOS 上线通知' % lastest_app_version, 'utf-8')
     try:
