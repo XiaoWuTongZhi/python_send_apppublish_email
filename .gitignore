@@ -107,5 +107,7 @@ dmypy.json
 # Pyre type checker
 .pyre/
 .idea/
-
+setup.egg-info/
+build/
+dist/
 # End of https://www.gitignore.io/api/python

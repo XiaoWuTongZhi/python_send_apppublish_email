@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
 
 from setuptools import setup, find_packages
@@ -9,13 +9,13 @@ with open('requirements.txt') as f:
 with open('README.md') as f:
     readme = f.read()
 
-setup(name='WormDemo',
+setup(name='setup',
       version='1.0',
       description='pip install',
       long_description=readme,
       author='wyh',
       author_email='609223770@qq.com',
-      url='https://github.com/XiaoWuTongZhi/PythonWormDemo',
+      url='',
       packages=find_packages(),
       install_requires=requirements
      )
