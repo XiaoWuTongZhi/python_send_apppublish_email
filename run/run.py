@@ -11,8 +11,9 @@ lastest_app_version = ''
 
 run_info = run_json_model()
 
-def auto_send_email(json_model:appstore_result_json_model):
 
+
+def auto_send_email(json_model: appstore_result_json_model):
     if compare(lastest_app_version, run_info.latest_app_version) == CompareResult.Greater:
 
         print('\033[1;32m 😁 needs to send email to everybody !\033[0m')
@@ -30,13 +31,20 @@ def auto_send_email(json_model:appstore_result_json_model):
         else:
             os.system('git tag %s' % lastest_app_version)
             os.system('git push origin --tags')
-            send_email_to_everybody()
+            res = send_email_to_everybody()
+            output_txt(res)
 
     else:
         print("\033[1;33m 😿 it doesn't need to send update-email. \033[0m")
 
+# Output file
+def output_txt(res:bool):
 
+    with open('result.txt','w') as f:
+        tip = 'appstore已更新，发送通知邮件成功' if (res==True) else 'appstore已更新，但发送通知邮件失败'
+        f.write(tip)
 
+# Check AppStore Version
 def check_appstore_version() -> appstore_result_json_model:
     global lastest_app_version
 
@@ -51,9 +59,9 @@ def check_appstore_version() -> appstore_result_json_model:
     print('appstore version is %s\nlocal lastest version is %s' % (lastest_app_version, run_info.latest_app_version))
     return json_model
 
+
 # SMTP email
 def send_email_to_everybody():
-
     server = smtplib.SMTP(host=run_info.smtp_host, port=run_info.smtp_port)
     server.login(user=run_info.smtp_user, password=run_info.smtp_password)
     server.set_debuglevel(1)
@@ -61,9 +69,9 @@ def send_email_to_everybody():
     release_note = run_info.app_release_note % lastest_app_version
 
     msg = MIMEText(release_note, 'plain', 'utf-8')
-    msg['From'] = '"%s"<%s>'%(run_info.smtp_user_nickname,run_info.smtp_user)
+    msg['From'] = '"%s"<%s>' % (run_info.smtp_user_nickname, run_info.smtp_user)
     msg['To'] = str(run_info.smtp_to_user_list)
-    msg['Subject'] = Header('%s %s iOS 上线通知' %(run_info.app_name,lastest_app_version), 'utf-8')
+    msg['Subject'] = Header('%s %s iOS 上线通知' % (run_info.app_name, lastest_app_version), 'utf-8')
     try:
         server.sendmail(from_addr=run_info.smtp_user, to_addrs=run_info.smtp_to_user_list, msg=msg.as_string())
         print('\033[0;32m smtp send success ‍\033[0m')
@@ -88,8 +96,6 @@ def write_excel(row, colum, value):
     df.to_excel(filename, index=False, header=True)
     print('write excel complete')
 
-
-
 # Private
 def update_run_information(df):
     run_info.smtp_user = df.iloc[0][1]
@@ -102,6 +108,7 @@ def update_run_information(df):
     run_info.app_id = df.iloc[7][1]
     run_info.appstore_info_url = df.iloc[8][1]
     run_info.smtp_user_nickname = df.iloc[9][1]
+
 
 def run():
     read_excel()
