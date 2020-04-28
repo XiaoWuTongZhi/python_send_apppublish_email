@@ -3,40 +3,15 @@
 import smtplib, requests, json, os, time
 import pandas as pd
 from interface import appstore_result_json_model, run_json_model, compare, CompareResult
-
 from email.mime.text import MIMEText
 from email.header import Header
+import aijia_server
+
+
 
 lastest_app_version = ''
 
 run_info = run_json_model()
-
-
-
-def auto_send_email(json_model: appstore_result_json_model):
-    if compare(lastest_app_version, run_info.latest_app_version) == CompareResult.Greater:
-
-        print('\033[1;32m 😁 needs to send email to everybody !\033[0m')
-
-        write_excel(6, 1, lastest_app_version)
-        time.sleep(2)
-        os.system('git add *')
-        # git_commit = "git commit - m 'update latest version to %s'"%lastest_app_version
-        os.system("git commit -m 'update latest version to %s'" % lastest_app_version)
-        res = os.system('git push origin')
-
-        if res != 0:
-            print('\033[0;31m git push origin failed ! \033[0m')
-            os._exit(-1)
-            output_txt('appstore已更新,但推送代码失败')
-        else:
-            os.system('git tag %s' % lastest_app_version)
-            os.system('git push origin --tags')
-            res = send_email_to_everybody()
-            output_txt('appstore已更新,已发送通知邮件给各位小伙伴' if (res==True) else 'appstore已更新,但发送邮件失败')
-
-    else:
-        print("\033[1;33m 😿 it doesn't need to send update-email. \033[0m")
 
 # Output file
 def output_txt(res:str):
@@ -110,11 +85,38 @@ def update_run_information(df):
     run_info.smtp_user_nickname = df.iloc[9][1]
 
 
+# Final step
+def auto_send_email(json_model: appstore_result_json_model):
+    if compare(lastest_app_version, run_info.latest_app_version) == CompareResult.Greater:
+
+        print('\033[1;32m 😁 needs to send email to everybody !\033[0m')
+
+        write_excel(6, 1, lastest_app_version)
+        time.sleep(2)
+        os.system('git add *')
+        # git_commit = "git commit - m 'update latest version to %s'"%lastest_app_version
+        os.system("git commit -m 'update latest version to %s'" % lastest_app_version)
+        res = os.system('git push origin')
+
+        if res != 0:
+            print('\033[0;31m git push origin failed ! \033[0m')
+            os._exit(-1)
+            output_txt('appstore已更新,但推送代码失败')
+        else:
+            os.system('git tag %s' % lastest_app_version)
+            os.system('git push origin --tags')
+            res = send_email_to_everybody()
+            output_txt('appstore已更新,已发送通知邮件给各位小伙伴' if (res==True) else 'appstore已更新,但发送邮件失败')
+
+    else:
+        print("\033[1;33m 😿 it doesn't need to send update-email. \033[0m")
+
 def run():
     read_excel()
     json_model = check_appstore_version()
     auto_send_email(json_model)
-
+    # json_model = aijia_server.Update_aijia_request_json_model(version=lastest_app_version,version_code=2415,note_zh=run_info.app_release_note,note_en=run_info.app_release_note)
+    # aijia_server.run_api(json_model)
 
 if __name__ == '__main__':
     run()
