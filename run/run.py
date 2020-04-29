@@ -76,7 +76,7 @@ def write_excel(row, colum, value):
 # Private
 def update_run_information(df):
     run_info.smtp_user = df.iloc[0][1]
-    run_info.smtp_to_user_list = df.iloc[1][1]
+    run_info.smtp_to_user_list = str(df.iloc[1][1]).split(',')
     run_info.smtp_host = df.iloc[2][1]
     run_info.smtp_port = df.iloc[3][1]
     run_info.smtp_password = df.iloc[4][1]

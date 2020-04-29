@@ -14,7 +14,7 @@ class base_json_model:
 
 class run_json_model():
     smtp_user = ''
-    smtp_to_user_list = ''
+    smtp_to_user_list = []
     smtp_host = ''
     smtp_port = 25
     smtp_password = ''
