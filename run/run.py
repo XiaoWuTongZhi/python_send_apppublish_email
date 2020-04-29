@@ -14,8 +14,7 @@ lastest_app_version = ''
 run_info = run_json_model()
 
 # Output file
-def output_txt(res:str):
-
+def output_txt(tip:str):
     with open('result.txt','w') as f:
         f.write(tip)
 
