@@ -113,7 +113,7 @@ def auto_send_email(json_model: appstore_result_json_model):
         if res != 0:
             print('\033[0;31m git push origin failed ! \033[0m')
             os._exit(-1)
-            output_txt('appstore已更新,但推送代码失败')
+            output_txt('appstore updated, but push git push origin failed')
         else:
             git_tag = 'git tag %s' % lastest_app_version
             system(git_tag)
@@ -122,7 +122,7 @@ def auto_send_email(json_model: appstore_result_json_model):
             system(git_tag_push)
 
             res = send_email_to_everybody()
-            output_txt('appstore已更新,已发送通知邮件给各位小伙伴' if (res==True) else 'appstore已更新,但发送邮件失败')
+            output_txt('appstore updated, send email suc !' if (res==True) else 'appstore updated, but send email failed')
 
     else:
         print("\033[1;33m 😿 it doesn't need to send update-email. \033[0m")
