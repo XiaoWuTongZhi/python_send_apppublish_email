@@ -94,7 +94,7 @@ def auto_send_email(json_model: appstore_result_json_model):
 
         write_excel(6, 1, lastest_app_version)
         time.sleep(2)
-        os.system('git add *')
+        os.system('git add .')
         # git_commit = "git commit - m 'update latest version to %s'"%lastest_app_version
         os.system("git commit -m 'update latest version to %s'" % lastest_app_version)
         res = os.system('git push origin')
