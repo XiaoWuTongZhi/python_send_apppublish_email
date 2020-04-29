@@ -15,6 +15,7 @@ run_info = run_json_model()
 
 # Output file
 def output_txt(tip:str):
+    print('output result.txt :',tip)
     with open('result.txt','w',encoding='utf-8') as f:
         f.write(tip)
 
@@ -125,7 +126,6 @@ def auto_send_email(json_model: appstore_result_json_model):
 
     else:
         print("\033[1;33m 😿 it doesn't need to send update-email. \033[0m")
-        output_txt('撒盛大大声道阿萨德啊')
 
 def run():
     read_excel()
