@@ -85,6 +85,10 @@ def update_run_information(df):
     run_info.appstore_info_url = df.iloc[8][1]
     run_info.smtp_user_nickname = df.iloc[9][1]
 
+def system(cmd:str):
+    print(cmd)
+    res = os.system(cmd)
+    return res
 
 # Final step
 def auto_send_email(json_model: appstore_result_json_model):
@@ -94,18 +98,28 @@ def auto_send_email(json_model: appstore_result_json_model):
 
         write_excel(6, 1, lastest_app_version)
         time.sleep(2)
-        os.system('git add .')
+
+        git_add = 'git add .'
+        system(git_add)
+
         # git_commit = "git commit - m 'update latest version to %s'"%lastest_app_version
-        os.system("git commit -m 'update latest version to %s'" % lastest_app_version)
-        res = os.system('git push origin')
+        git_commit = "git commit -m 'update latest version to %s'" % lastest_app_version
+        system(git_commit)
+
+        git_push = 'git push origin'
+        res = system(git_push)
 
         if res != 0:
             print('\033[0;31m git push origin failed ! \033[0m')
             os._exit(-1)
             output_txt('appstore已更新,但推送代码失败')
         else:
-            os.system('git tag %s' % lastest_app_version)
-            os.system('git push origin --tags')
+            git_tag = 'git tag %s' % lastest_app_version
+            system(git_tag)
+
+            git_tag_push = 'git push origin --tags'
+            system(git_tag_push)
+
             res = send_email_to_everybody()
             output_txt('appstore已更新,已发送通知邮件给各位小伙伴' if (res==True) else 'appstore已更新,但发送邮件失败')
 
