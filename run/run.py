@@ -59,14 +59,16 @@ def send_email_to_everybody():
 # Excel
 def read_excel():
     # filename = os.path.join('run', 'input.xlsx')
-    df = pd.read_excel('input.xlsx')
+    filename = 'input.xlsx'
+    df = pd.read_excel(filename)
     print('read excel:' + str(df.values) + '\n==========================')
     update_run_information(df)
 
 
 def write_excel(row, colum, value):
     # filename = os.path.join('run', 'input.xlsx')
-    df = pd.read_excel('input.xlsx')
+    filename = 'input.xlsx'
+    df = pd.read_excel(filename)
     df.iloc[row][colum] = value
     df.to_excel(filename, index=False, header=True)
     print('write excel complete')
