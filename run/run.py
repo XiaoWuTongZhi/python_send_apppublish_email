@@ -23,7 +23,7 @@ def output_txt(tip:str):
 def check_appstore_version() -> appstore_result_json_model:
     global lastest_app_version
 
-    res = requests.get(url=run_info.appstore_info_url, params={'id': run_info.app_id})
+    res = requests.post(url=run_info.appstore_info_url, params={'id': run_info.app_id})
     dict = json.loads(res.content)
     print('AppStore response json data is', dict)
     json_model = appstore_result_json_model(dict['results'][0])  # parse json model
