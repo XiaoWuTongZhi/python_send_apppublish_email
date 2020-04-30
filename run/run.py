@@ -76,6 +76,7 @@ def write_excel(row, colum, value):
 def remove_txt_if_needs():
     filename = 'result.txt'
     if os.path.exists(filename):
+        print('Find result.txt exist, will delete it first ...')
         os.remove(filename)
 
 # Private
