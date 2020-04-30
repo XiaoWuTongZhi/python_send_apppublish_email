@@ -73,6 +73,11 @@ def write_excel(row, colum, value):
     df.to_excel(filename, index=False, header=True)
     print('write excel complete')
 
+def remove_txt_if_needs():
+    filename = 'result.txt'
+    if os.path.exists(filename):
+        os.remove(filename)
+
 # Private
 def update_run_information(df):
     run_info.smtp_user = df.iloc[0][1]
@@ -128,6 +133,7 @@ def auto_send_email(json_model: appstore_result_json_model):
         print("\033[1;33m 😿 it doesn't need to send update-email. \033[0m")
 
 def run():
+    remove_txt_if_needs()
     read_excel()
     json_model = check_appstore_version()
     auto_send_email(json_model)
